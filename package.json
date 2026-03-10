@@ -46,7 +46,6 @@
     "lint": "oxlint",
     "typecheck": "tsc --noEmit",
     "build": "yarn clean && bob build && rm -rf dist/*/package.json",
-    "prepare": "yarn build",
     "prepack": "prettier '**/*' -u -c && yarn lint && yarn typecheck && yarn build && node ../obfuscator"
   },
   "react-native-builder-bob": {
