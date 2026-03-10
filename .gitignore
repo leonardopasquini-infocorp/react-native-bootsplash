@@ -53,7 +53,7 @@ yarn-error.log
 /example/vendor/bundle/
 
 # Bob
-dist/
+#dist/
 
 # CLI paid addon
 src/addon
