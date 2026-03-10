@@ -24,29 +24,33 @@ export const AnimatedBootSplash = ({ onAnimationEnd }: Props) => {
     // navigationBarTranslucent: true,
 
     animate: () => {
-      const { height } = Dimensions.get("window");
+      // delay the whole hide animation by 2 seconds
+      setTimeout(() => {
+        const { height } = Dimensions.get("window");
 
-      Animated.stagger(250, [
-        Animated.spring(translateY, {
-          useNativeDriver,
-          toValue: -50,
-        }),
-        Animated.spring(translateY, {
-          useNativeDriver,
-          toValue: height,
-        }),
-      ]).start();
+        Animated.stagger(250, [
+          Animated.spring(translateY, {
+            useNativeDriver,
+            toValue: -50,
+          }),
+          Animated.spring(translateY, {
+            useNativeDriver,
+            toValue: height,
+          }),
+        ]).start();
 
-      Animated.timing(opacity, {
-        useNativeDriver,
-        toValue: 0,
-        duration: 150,
-        delay: 350,
-      }).start(() => {
-        onAnimationEnd();
-      });
+        Animated.timing(opacity, {
+          useNativeDriver,
+          toValue: 0,
+          duration: 150,
+          delay: 350,
+        }).start(() => {
+          onAnimationEnd();
+        });
+      }, 2000);
     },
   });
+  console.log({ container, logo });
 
   return (
     <Animated.View {...container} style={[container.style, { opacity }]}>

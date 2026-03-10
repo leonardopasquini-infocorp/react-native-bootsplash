@@ -479,6 +479,48 @@ By default, the system bars uses `dark-content` in light mode and `light-content
 
 For the sake of simplicity. Since the light and dark versions of your assets are likely identical (except for the colors), if your `index.html` file is compressed with **gzip**, the size difference will be negligible.
 
+### How can I enable full screen?
+
+You can enable a "full screen" (immersive) mode to hide the status bar and the navigation bar during the splash screen display.
+
+#### Android
+
+Edit your `android/app/src/main/res/values/styles.xml` file to add the `android:windowFullscreen` attribute:
+
+```xml
+<resources>
+  <!-- … -->
+
+  <style name="BootTheme" parent="Theme.BootSplash">
+    <!-- ⬇️ Add this line -->
+    <item name="android:windowFullscreen">true</item>
+  </style>
+</resources>
+```
+
+The library will automatically detect this attribute and hide the system bars (immersive mode) and extend the splash screen into the notch area (edge-to-edge).
+
+#### iOS
+
+Edit your `ios/YourApp/Info.plist` file:
+
+1. Set `Status bar is initially hidden` (`UIStatusBarHidden`) to `YES`.
+2. Set `View controller-based status bar appearance` (`UIViewControllerBasedStatusBarAppearance`) to `NO` (default in newer React Native versions).
+
+This will hide the status bar during the launch screen. When `BootSplash.hide()` is called, the status bar will reappear (unless your app is also full screen).
+
+#### 🖼️ Wallpaper Mode (Full Screen Image)
+
+If you want to use a **full-screen image** (instead of a centered logo with a background color), follow these steps:
+
+1. Use a large image (e.g., 2000x2000px) to ensure it covers all screen ratios.
+2. Run the generator with a large `--logo-width` to prevent downsizing:
+   ```bash
+   npx react-native-bootsplash generate path/to/background.png --logo-width=1000
+   ```
+3. The library will automatically use **Aspect Fill** (iOS) and **Center Crop** (Android) to fill the entire screen, maintaining the aspect ratio without distortion.
+
+
 ### How should I use it with React Navigation?
 
 If you are using React Navigation, you can hide the splash screen once the navigation container and all children have finished mounting by using the `onReady` function.

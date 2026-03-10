@@ -56,12 +56,13 @@ class RNBootSplashDialog(
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    setContentView(R.layout.bootsplash_view)
+
     window?.apply {
       setLayout(
         WindowManager.LayoutParams.MATCH_PARENT,
         WindowManager.LayoutParams.MATCH_PARENT
       )
-
       setWindowAnimations(
         when {
           fade -> R.style.BootSplashFadeOutAnimation
@@ -75,5 +76,34 @@ class RNBootSplashDialog(
     }
 
     super.onCreate(savedInstanceState)
+
+    if (isFullscreen) {
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+        window?.attributes?.layoutInDisplayCutoutMode =
+          android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+      }
+
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+        window?.insetsController?.let { controller ->
+          controller.hide(android.view.WindowInsets.Type.statusBars() or android.view.WindowInsets.Type.navigationBars())
+          controller.systemBarsBehavior =
+            android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+      } else {
+        @Suppress("DEPRECATION")
+        window?.decorView?.systemUiVisibility = (
+          android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            or android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
+          )
+      }
+    }
   }
+
+  private val isFullscreen: Boolean
+    get() {
+      val typedValue = android.util.TypedValue()
+      context.theme.resolveAttribute(android.R.attr.windowFullscreen, typedValue, true)
+      return typedValue.data != 0
+    }
 }

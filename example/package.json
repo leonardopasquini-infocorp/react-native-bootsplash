@@ -8,16 +8,18 @@
   "scripts": {
     "react-native-bootsplash": "node ../cli.js",
     "clean": "rm -rf ./node_modules",
-    "preinstall": "cd .. && yarn && yarn build && cd example",
     "start": "react-native start",
+    "ios": "npx react-native run-ios",
+    "android": "npx react-native run-android",
     "web": "webpack serve",
     "reinstall": "yarn clean && yarn install"
   },
   "dependencies": {
+    "patch-package": "^8.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-native": "0.83.1",
-    "react-native-bootsplash": "link:../",
+    "react-native-bootsplash": "7.0.2",
     "react-native-edge-to-edge": "1.7.0",
     "react-native-web": "0.21.2"
   },

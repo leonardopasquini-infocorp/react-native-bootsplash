@@ -34,7 +34,7 @@ export const App = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, Dave.</Text>
+      <Text style={styles.text}>Hello, Leo.</Text>
 
       {visible && (
         <AnimatedBootSplash

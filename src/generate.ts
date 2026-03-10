@@ -46,9 +46,9 @@ export const log = {
     if (!isExpo) {
       console.log(
         `    ${path.relative(workingPath, filePath)}` +
-          (dimensions != null
-            ? ` (${dimensions.width}x${dimensions.height})`
-            : ""),
+        (dimensions != null
+          ? ` (${dimensions.width}x${dimensions.height})`
+          : ""),
       );
     }
   },
@@ -113,8 +113,8 @@ const getStoryboard = (props: Props) => {
                         <rect key="frame" x="0.0" y="0.0" width="${frameWidth}" height="${frameHeight}"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="BootSplashLogo-${fileNameSuffix}" translatesAutoresizingMaskIntoConstraints="NO" id="3lX-Ut-9ad">
-                                <rect key="frame" x="${(frameWidth - logo.width) / 2}" y="${(frameHeight - logo.height) / 2}" width="${logo.width}" height="${logo.height}"/>
+                            <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="BootSplashLogo-${fileNameSuffix}" translatesAutoresizingMaskIntoConstraints="NO" id="3lX-Ut-9ad">
+                                <rect key="frame" x="0.0" y="0.0" width="${frameWidth}" height="${frameHeight}"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -123,8 +123,10 @@ const getStoryboard = (props: Props) => {
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" name="BootSplashBackground-${fileNameSuffix}"/>
                         <constraints>
-                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Fh9-Fy-1nT"/>
-                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="nvB-Ic-PnI"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="pin-top"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="pin-bottom"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="pin-leading"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="pin-trailing"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -170,16 +172,16 @@ export const writeJson = (filePath: string, content: object) => {
 
 type FormatOptions = { indent?: Indent } & (
   | {
-      formatter: "prettier";
-      selfClosingTags?: boolean;
-      useCssPlugin?: boolean;
-      htmlWhitespaceSensitivity?: PrettierOptions["htmlWhitespaceSensitivity"];
-      singleAttributePerLine?: PrettierOptions["singleAttributePerLine"];
-    }
+    formatter: "prettier";
+    selfClosingTags?: boolean;
+    useCssPlugin?: boolean;
+    htmlWhitespaceSensitivity?: PrettierOptions["htmlWhitespaceSensitivity"];
+    singleAttributePerLine?: PrettierOptions["singleAttributePerLine"];
+  }
   | {
-      formatter: "xmlFormatter";
-      whiteSpaceAtEndOfSelfclosingTag?: XMLFormatterOptions["whiteSpaceAtEndOfSelfclosingTag"];
-    }
+    formatter: "xmlFormatter";
+    whiteSpaceAtEndOfSelfclosingTag?: XMLFormatterOptions["whiteSpaceAtEndOfSelfclosingTag"];
+  }
 );
 
 export const readXmlLike = (filePath: string) => {
@@ -586,38 +588,15 @@ export const writeAndroidAssets = async ({
 
       hfs.ensureDir(drawableDirPath);
 
-      // https://developer.android.com/develop/ui/views/launch/splash-screen#dimensions
-      const canvasSize = 288 * ratio;
-
-      // https://sharp.pixelplumbing.com/api-constructor
-      const canvas = sharp({
-        create: {
-          width: canvasSize,
-          height: canvasSize,
-          channels: 4,
-          background: {
-            r: 255,
-            g: 255,
-            b: 255,
-            alpha: 0,
-          },
-        },
-      });
-
       const filePath = path.resolve(drawableDirPath, "bootsplash_logo.png");
 
       return logo.image
         .clone()
         .resize(logo.width * ratio)
-        .toBuffer()
-        .then((input) =>
-          canvas.composite([{ input }]).png({ quality: 100 }).toFile(filePath),
-        )
-        .then(() => {
-          log.write(filePath, {
-            width: canvasSize,
-            height: canvasSize,
-          });
+        .png({ quality: 100 })
+        .toFile(filePath)
+        .then(({ width, height }) => {
+          log.write(filePath, { width, height });
         });
     }),
   );
@@ -762,10 +741,10 @@ export const writeWebAssets = async ({
     format === "svg"
       ? hfs.buffer(logo.path)
       : await logo.image
-          .clone()
-          .resize(Math.round(logo.width * 2))
-          .png({ quality: 100 })
-          .toBuffer()
+        .clone()
+        .resize(Math.round(logo.width * 2))
+        .png({ quality: 100 })
+        .toBuffer()
   ).toString("base64");
 
   const dataURI = `data:image/${format ? "svg+xml" : "png"};base64,${base64}`;
@@ -867,30 +846,30 @@ export const requireAddon = ({
   licenseKey,
 }: Props):
   | {
-      execute: (config: AddonConfig) => Promise<void>;
+    execute: (config: AddonConfig) => Promise<void>;
 
-      writeAndroidAssets: (_: {
-        androidOutputPath: string;
-        props: Props;
-      }) => Promise<void>;
+    writeAndroidAssets: (_: {
+      androidOutputPath: string;
+      props: Props;
+    }) => Promise<void>;
 
-      writeIOSAssets: (_: {
-        iosOutputPath: string;
-        props: Props;
-      }) => Promise<void>;
+    writeIOSAssets: (_: {
+      iosOutputPath: string;
+      props: Props;
+    }) => Promise<void>;
 
-      writeWebAssets: (_: {
-        htmlTemplatePath: string;
-        props: Props;
-      }) => Promise<void>;
+    writeWebAssets: (_: {
+      htmlTemplatePath: string;
+      props: Props;
+    }) => Promise<void>;
 
-      writeGenericAssets: (_: { props: Props }) => Promise<void>;
+    writeGenericAssets: (_: { props: Props }) => Promise<void>;
 
-      withAndroidColorsNight: (_: {
-        config: Expo.ExportedConfigWithProps;
-        props: Props;
-      }) => Promise<Expo.ExportedConfigWithProps>;
-    }
+    withAndroidColorsNight: (_: {
+      config: Expo.ExportedConfigWithProps;
+      props: Props;
+    }) => Promise<Expo.ExportedConfigWithProps>;
+  }
   | undefined => {
   if (licenseKey != null && executeAddon) {
     try {

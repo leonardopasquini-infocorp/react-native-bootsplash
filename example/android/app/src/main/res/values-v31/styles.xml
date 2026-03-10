@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BootTheme" parent="Theme.BootSplash">
+        <!-- Disable the splash icon animation on Android 12+ to avoid the "maximizing icon" glitch when using a full-screen image -->
+        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+    </style>
+</resources>
