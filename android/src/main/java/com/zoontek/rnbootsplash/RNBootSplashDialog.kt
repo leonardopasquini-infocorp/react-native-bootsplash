@@ -56,7 +56,9 @@ class RNBootSplashDialog(
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    setContentView(R.layout.bootsplash_view)
+    if (isFullscreen) {
+      setContentView(R.layout.bootsplash_view)
+    }
 
     window?.apply {
       setLayout(
