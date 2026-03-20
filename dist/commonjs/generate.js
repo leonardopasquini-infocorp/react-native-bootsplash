@@ -305,8 +305,8 @@ const transformProps = async (rootPath, {
   licenseKey,
   ...rawProps
 }) => {
-  if (_semver.default.lt(process.versions.node, "20.0.0")) {
-    log.error("Requires Node 20 (or higher)");
+  if (_semver.default.lt(process.versions.node, "18.0.0")) {
+    log.error("Requires Node 18 (or higher)");
     process.exit(1);
   }
   const assetsOutputPath = _path.default.resolve(rootPath, rawProps.assetsOutput);
