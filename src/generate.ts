@@ -924,6 +924,10 @@ export const generate = async ({
   if (androidOutputPath != null) {
     await writeAndroidAssets({ androidOutputPath, props });
 
+    /*
+      Se desactiva la edición automática de AndroidManifest.xml ya qué la modificación ya está hecha y se evita el bug
+      https://github.com/zoontek/react-native-bootsplash/issues/631#issuecomment-2540077895
+
     const manifestXmlPath = path.resolve(
       androidOutputPath,
       "..",
@@ -950,6 +954,7 @@ export const generate = async ({
     } else {
       log.warn("No AndroidManifest.xml found");
     }
+    */
 
     const valuesPath = path.resolve(androidOutputPath, "values");
     hfs.ensureDir(valuesPath);

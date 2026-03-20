@@ -653,25 +653,35 @@ export const generate = async ({
       androidOutputPath,
       props
     });
-    const manifestXmlPath = path.resolve(androidOutputPath, "..", "AndroidManifest.xml");
-    if (hfs.exists(manifestXmlPath)) {
+
+    /*
+      Se desactiva la edición automática de AndroidManifest.xml ya qué la modificación ya está hecha y se evita el bug
+      https://github.com/zoontek/react-native-bootsplash/issues/631#issuecomment-2540077895
+     const manifestXmlPath = path.resolve(
+      androidOutputPath,
+      "..",
+      "AndroidManifest.xml",
+    );
+     if (hfs.exists(manifestXmlPath)) {
       const manifestXml = readXmlLike(manifestXmlPath);
       const activities = manifestXml.root.querySelectorAll("activity");
-      for (const activity of activities) {
+       for (const activity of activities) {
         if (activity.getAttribute("android:name") === ".MainActivity") {
           activity.setAttribute("android:theme", "@style/BootTheme");
         }
       }
-      await writeXmlLike(manifestXmlPath, manifestXml.root.toString(), {
+       await writeXmlLike(manifestXmlPath, manifestXml.root.toString(), {
         ...manifestXml.formatOptions,
         formatter: "prettier",
         htmlWhitespaceSensitivity: "ignore",
         selfClosingTags: true,
-        singleAttributePerLine: true
+        singleAttributePerLine: true,
       });
     } else {
       log.warn("No AndroidManifest.xml found");
     }
+    */
+
     const valuesPath = path.resolve(androidOutputPath, "values");
     hfs.ensureDir(valuesPath);
     const colorsXmlPath = path.resolve(valuesPath, "colors.xml");
